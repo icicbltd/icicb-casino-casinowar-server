@@ -24,17 +24,17 @@ const user = [];
 module.exports = {
     CardOder: async (req, res) => {
         const { userName, token } = req.body;
+        var cardOrder = getArray(52, 52);
+        user[token] = {
+            cardArray: cardOrder,
+            userName: userName,
+            userToken: token,
+            winAmount: 0,
+            tieAmount: 0,
+            flag: 0,
+            amount: 0
+        }
         try {
-            var cardOrder = getArray(52, 52);
-            user[token] = {
-                cardArray: cardOrder,
-                userName: userName,
-                userToken: token,
-                winAmount: 0,
-                tieAmount: 0,
-                flag: 0,
-                amount: 0
-            }
             try {
                 res.json({
                     cardOder: user[token].cardArray,
@@ -78,15 +78,15 @@ module.exports = {
     },
     Result: async (req, res) => {
         const { userName, token, winAmount, tieAmount, result, amount } = req.body;
+        var flag = parseInt(result);
+        var winValue = parseInt(winAmount);
+        var tieValue = parseInt(tieAmount);
+        var amountValue = parseFloat(amount);
+        user[token].flag = flag;
+        user[token].winAmount = winValue;
+        user[token].tieAmount = tieValue;
+        user[token].amount = amountValue;
         try {
-            var flag = parseInt(result);
-            var winValue = parseInt(winAmount);
-            var tieValue = parseInt(tieAmount);
-            var amountValue = parseFloat(amount);
-            user[token].flag = flag;
-            user[token].winAmount = winValue;
-            user[token].tieAmount = tieValue;
-            user[token].amount = amountValue;
             var raisePrice = 0;
             var msg = "";
             var total;
@@ -146,11 +146,11 @@ module.exports = {
     },
     Goto: async (req, res) => {
         const { userName, token, winAmount, amount } = req.body;
+        var winValue = parseInt(winAmount);
+        var amountValue = parseFloat(amount);
+        user[token].winAmount = winValue;
+        user[token].amount = amountValue;
         try {
-            var winValue = parseInt(winAmount);
-            var amountValue = parseFloat(amount);
-            user[token].winAmount = winValue;
-            user[token].amount = amountValue;
             var usercard = user[token].cardArray[2] % 13;
             var bortcard = user[token].cardArray[3] % 13;
             var msg = "";
@@ -207,11 +207,11 @@ module.exports = {
     },
     Surrender: async (req, res) => {
         const { userName, token, winAmount, amount } = req.body;
+        var winValue = parseInt(winAmount);
+        var amountValue = parseFloat(amount);
+        user[token].winAmount = winValue;
+        user[token].amount = amountValue;
         try {
-            var winValue = parseInt(winAmount);
-            var amountValue = parseFloat(amount);
-            user[token].winAmount = winValue;
-            user[token].amount = amountValue;
             var msg = "You Surrender";
             var total = user[token].amount + user[token].winAmount;
             try {
