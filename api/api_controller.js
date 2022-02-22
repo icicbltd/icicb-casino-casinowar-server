@@ -6,7 +6,7 @@ const res = require("express/lib/response");
 const rand = require("random-seed").create();
 require("dotenv").config();
 
-function getArray(num, max) {
+const getArray = async (num, max) => {
     var array = [];
     for (var i = 0; i < num;) {
         var random = getRandomInt(max);
@@ -24,7 +24,7 @@ const user = [];
 module.exports = {
     CardOder: async (req, res) => {
         const { userName, token } = req.body;
-        var cardOrder = getArray(52, 52);
+        var cardOrder = await getArray(52, 52);
         user[token] = {
             cardArray: cardOrder,
             userName: userName,
@@ -51,9 +51,9 @@ module.exports = {
     },
     CasinoWar: async (req, res) => {
         const { userName, token } = req.body;
+        var usercard = user[token].cardArray[0] % 13;
+        var bortcard = user[token].cardArray[1] % 13;
         try {
-            var usercard = user[token].cardArray[0] % 13;
-            var bortcard = user[token].cardArray[1] % 13;
             var check;
             if (usercard > bortcard) {
                 check = 1;
@@ -150,9 +150,9 @@ module.exports = {
         var amountValue = parseFloat(amount);
         user[token].winAmount = winValue;
         user[token].amount = amountValue;
+        var usercard = user[token].cardArray[2] % 13;
+        var bortcard = user[token].cardArray[3] % 13;
         try {
-            var usercard = user[token].cardArray[2] % 13;
-            var bortcard = user[token].cardArray[3] % 13;
             var msg = "";
             var raisePrice;
             if (usercard >= bortcard) {
@@ -203,7 +203,7 @@ module.exports = {
                 serverMsg: err.message
             })
         }
-        delete user[token];
+
     },
     Surrender: async (req, res) => {
         const { userName, token, winAmount, amount } = req.body;
@@ -240,6 +240,5 @@ module.exports = {
                 serverMsg: err.message
             })
         }
-        delete user[token];
     },
 };
