@@ -87,6 +87,17 @@ module.exports = {
         user[token].tieAmount = tieValue;
         user[token].amount = amountValue;
         try {
+            try {
+                await axios.post(
+                    process.env.PLATFORM_SERVER + "api/games/bet",
+                    {
+                        token: user[token].userToken,
+                        amount: user[token].winAmount + user[token].tieAmount,
+                    }
+                );
+            } catch (err) {
+                throw new Error("Bet Error!");
+            }
             var raisePrice = 0;
             var msg = "";
             var total;
@@ -103,17 +114,6 @@ module.exports = {
                 msg = "Better luck next time!";
             }
             total = user[token].amount + raisePrice;
-            try {
-                await axios.post(
-                    process.env.PLATFORM_SERVER + "api/games/bet",
-                    {
-                        token: user[token].userToken,
-                        amount: user[token].winAmount + user[token].tieAmount,
-                    }
-                );
-            } catch (err) {
-                throw new Error("Bet Error!");
-            }
             if (raisePrice > 0) {
                 try {
                     await axios.post(
@@ -153,16 +153,6 @@ module.exports = {
         var usercard = user[token].cardArray[2] % 13;
         var bortcard = user[token].cardArray[3] % 13;
         try {
-            var msg = "";
-            var raisePrice;
-            if (usercard >= bortcard) {
-                raisePrice = user[token].winAmount * 2;
-                msg = "You win : +" + raisePrice;
-            } else {
-                raisePrice = 0;
-                msg = "Better luck next time!";
-            }
-            var total = user[token].amount + raisePrice;
             try {
                 await axios.post(
                     process.env.PLATFORM_SERVER + "api/games/bet",
@@ -174,6 +164,16 @@ module.exports = {
             } catch (err) {
                 throw new Error("Bet Error!");
             }
+            var msg = "";
+            var raisePrice;
+            if (usercard >= bortcard) {
+                raisePrice = user[token].winAmount * 2;
+                msg = "You win : +" + raisePrice;
+            } else {
+                raisePrice = 0;
+                msg = "Better luck next time!";
+            }
+            var total = user[token].amount + raisePrice;
             if (raisePrice > 0) {
                 try {
                     await axios.post(
