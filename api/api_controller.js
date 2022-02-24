@@ -87,18 +87,7 @@ module.exports = {
         user[token].tieAmount = tieValue;
         user[token].amount = amountValue;
         try {
-            var bet = user[token].winAmount + user[token].tieAmount;
-            try {
-                await axios.post(
-                    process.env.PLATFORM_SERVER + "api/games/bet",
-                    {
-                        token: user[token].userToken,
-                        amount: bet,
-                    }
-                );
-            } catch (err) {
-                throw new Error("Bet Error!");
-            }
+
             var raisePrice = 0;
             var msg = "";
             var total;
@@ -115,6 +104,19 @@ module.exports = {
                 msg = "Better luck next time!";
             }
             total = user[token].amount + raisePrice;
+
+            var bet = user[token].winAmount + user[token].tieAmount;
+            try {
+                await axios.post(
+                    process.env.PLATFORM_SERVER + "api/games/bet",
+                    {
+                        token: user[token].userToken,
+                        amount: bet,
+                    }
+                );
+            } catch (err) {
+                throw new Error("Bet Error!");
+            }
             if (raisePrice > 0) {
                 try {
                     await axios.post(
