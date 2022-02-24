@@ -87,12 +87,13 @@ module.exports = {
         user[token].tieAmount = tieValue;
         user[token].amount = amountValue;
         try {
+            var bet = user[token].winAmount + user[token].tieAmount;
             try {
                 await axios.post(
                     process.env.PLATFORM_SERVER + "api/games/bet",
                     {
                         token: user[token].userToken,
-                        amount: user[token].winAmount + user[token].tieAmount,
+                        amount: bet,
                     }
                 );
             } catch (err) {
